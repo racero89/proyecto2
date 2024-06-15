@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 
 const app = express();
 const PORT = 3000;
+const routes = require("./routes/products");
 const connectionString =
   "mongodb+srv://Monica:XI9LeO2eZ0udtRmh@cluster0.iuurxco.mongodb.net/Tienda";
 
 app.use(express.json());
-
+app.use("/", routes);
 try {
   mongoose.connect(connectionString);
 } catch (error) {
