@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda de Ropa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>Tienda de Ropa</h1>
+  </header>
+
+  <section class="filtros">
+    <input type="text" id="busqueda" placeholder="Buscar por nombre">
+
+    <select id="categoria">
+      <option value="">Todas las Categorías</option>
+      <option value="Camisetas">Camisetas</option>
+      <option value="Pantalones">Pantalones</option>
+      <option value="Zapatos">Zapatos</option>
+      <option value="Accesorios">Accesorios</option>
+    </select>
+
+    <select id="talla">
+      <option value="">Todas las Tallas</option>
+      <option value="XS">XS</option>
+      <option value="S">S</option>
+      <option value="M">M</option>
+      <option value="L">L</option>
+      <option value="XL">XL</option>
+    </select>
+  </section>
+
+  <section id="productos" class="productos">
+
+
+  </section>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- FORMULARIO DE PRODUCTO -->
+<form id="formProducto">
+  <div class="campo" id="campo-nombre">
+    <label for="nombre">Nombre</label>
+    <input type="text" id="nombre" required>
+  </div>
+
+  <div class="campo" id="campo-descripcion">
+    <label for="descripcion">Descripción</label>
+    <input type="text" id="descripcion" required>
+  </div>
+
+  <div class="campo" id="campo-imagen">
+    <label for="imagen">Imagen (URL)</label>
+    <input type="url" id="imagen" required>
+  </div>
+
+  <div class="campo" id="campo-categoria">
+    <label for="categoria">Categoría</label>
+    <select id="categoria" required>
+      <option value="">Selecciona una categoría</option>
+      <option value="Camisetas">Camisetas</option>
+      <option value="Pantalones">Pantalones</option>
+      <option value="Zapatos">Zapatos</option>
+      <option value="Accesorios">Accesorios</option>
+    </select>
+  </div>
+
+  <div class="campo" id="campo-talla">
+    <label for="talla">Talla</label>
+    <select id="talla" required>
+      <option value="">Selecciona una talla</option>
+      <option value="XS">XS</option>
+      <option value="S">S</option>
+      <option value="M">M</option>
+      <option value="L">L</option>
+      <option value="XL">XL</option>
+    </select>
+  </div>
+
+  <div class="campo" id="campo-precio">
+    <label for="precio">Precio</label>
+    <input type="number" id="precio" step="0.01" required>
+  </div>
+
+  <button type="submit">Crear Producto</button>
+</form>
+
+<!-- FORMULARIO DE LOGIN (fuera del anterior) -->
+<form id="loginForm">
+  <h2>Login</h2>
+  <div class="campo">
+    <label for="usuario">Usuario</label>
+    <input type="text" id="usuario" required>
+  </div>
+  <div class="campo">
+    <label for="contrasena">Contraseña</label>
+    <input type="password" id="contrasena" required>
+  </div>
+  <button type="submit">Entrar</button>
+</form>
+
+<script>
+  // Enviar producto al backend
+  document.getElementById('formProducto').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const producto = {
+      nombre: document.getElementById('nombre').value,
+      descripcion: document.getElementById('descripcion').value,
+      imagen: document.getElementById('imagen').value,
+      categoria: document.getElementById('categoria').value,
+      talla: document.getElementById('talla').value,
+      precio: parseFloat(document.getElementById('precio').value),
+    };
+
+    try {
+      const respuesta = await fetch('http://localhost:3000/api/productos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(producto),
+      });
+
+      const data = await respuesta.json();
+
+      if (respuesta.ok) {
+        alert('Producto creado con éxito');
+        console.log('Producto:', data);
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error al conectar con el servidor:', error);
+      alert('Error de conexión');
+    }
+  });
+
+  // Opcional: Simulación de login básico (solo muestra mensaje)
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const usuario = document.getElementById('usuario').value;
+    const contrasena = document.getElementById('contrasena').value;
+
+    // Simulación de login (NO seguro)
+    if (usuario === 'admin' && contrasena === '1234') {
+      alert('Login exitoso');
+    } else {
+      alert('Credenciales incorrectas');
+    }
+  });
+</script>
+</body>
+
+</html>

@@ -1,24 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const productRoutes = require("./routes/productRoutes");
+require("dotenv").config();
 
 const app = express();
-const PORT = 3000;
-const routes = require("./routes/products");
-const connectionString =
-  "mongodb+srv://Monica:XI9LeO2eZ0udtRmh@cluster0.iuurxco.mongodb.net/Tienda";
+const PORT = process.env.PORT || 3000;
 
+// Middlewares
 app.use(express.json());
-app.use("/", routes);
-try {
-  mongoose.connect(connectionString);
-} catch (error) {
-  console.log("fallo al conectar");
-}
 
-const dbConnection = mongoose.connection;
-dbConnection.on("error", (err) => console.log("Conexión errónea", err));
-dbConnection.once("open", () => console.log("Mongo está conectado!!"));
+// Rutas
+app.use("/api/products", productRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando puerto ${PORT}`);
-});
+// Conexión a MongoDB y servidor
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Conectado a MongoDB");
+    app.listen(PORT, () => console.log("Servidor corriendo en puerto ${PORT}"));
+  })
+  .catch((err) => console.error("Error al conectar a MongoDB:", err));

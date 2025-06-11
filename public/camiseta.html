@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tienda de Ropa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Tienda de Ropa</h1>
+    <section class="filtros">
+        <input type="text" id="busqueda" placeholder="Buscar por Categorias">
+    </section>
+    <div class="categorias">
+
+        <details>
+            <summary>Camisetas</summary>
+            <div class="productos" data-categoria="Camisetas"></div>
+        </details>
+
+        <details>
+            <summary>Pantalones</summary>
+            <div class="productos" data-categoria="Pantalones"></div>
+        </details>
+
+        <details>
+            <summary>Zapatos</summary>
+            <div class="productos" data-categoria="Zapatos"></div>
+        </details>
+
+        <details>
+            <summary>Accesorios</summary>
+            <div class="productos" data-categoria="Accesorios"></div>
+        </details>
+
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

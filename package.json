@@ -1,25 +1,31 @@
 {
-  "name": "ejercico-crud-db-mongoose",
+  "name": "tienda-ropa",
   "version": "1.0.0",
-  "description": "Esta es una aplicación sencilla en Node.js utilizando Express con mongoose para crear una API de tareas, donde podras crear, ver tareas, actulizar y borrarlas.",
+  "description": "Tienda de ropa con Express, MongoDB y panel de administración",
   "main": "index.js",
   "scripts": {
-    "start": "node --watch app.js"
+    "start": "node --watch index.js",
+    "dev": "nodemon index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/racero89/ejercico-CRUD-DB-mongoose.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/racero89/ejercico-CRUD-DB-mongoose/issues"
-  },
-  "homepage": "https://github.com/racero89/ejercico-CRUD-DB-mongoose#readme",
+  "keywords": [
+    "node",
+    "express",
+    "mongodb",
+    "mongoose",
+    "ropa",
+    "dashboard"
+  ],
+  "author": "TuNombre",
+  "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "mongodb": "^6.6.2",
-    "mongoose": "^8.4.0"
+    "cloudinary": "^1.39.1",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "method-override": "^3.0.0",
+    "mongoose": "^7.8.7",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
