@@ -1,127 +1,110 @@
-// controllers/productController.js
-const Product = require("../models/Product");
+let productos = [
+  {
+    id: 1,
+    name: "Camiseta Básica",
+    price: 20,
+    description: "Camiseta de algodón 100%",
+    image: "https://picsum.photos/200?random=1",
+    category: "camiseta",
+    talla: "M",
+  },
+  {
+    id: 2,
+    name: "Pantalón Chino",
+    price: 35,
+    description: "Pantalón elegante para uso diario",
+    image: "https://picsum.photos/200?random=2",
+    category: "pantalon",
+    talla: "L",
+  },
+  {
+    id: 3,
+    name: "Zapatillas Urbanas",
+    price: 50,
+    description: "Zapatillas cómodas para caminar",
+    image: "https://picsum.photos/200?random=3",
+    category: "zapatillas",
+    talla: "42",
+  },
+  {
+    id: 4,
+    name: "Gorra Estilo",
+    price: 15,
+    description: "Accesorio de moda con estilo urbano",
+    image: "https://picsum.photos/200?random=4",
+    category: "accesorios",
+    talla: "Única",
+  },
+];
 
-const showProducts = async (req, res) => {
-  const products = await Product.find();
-  const html = baseHtml(
-    getNavBar(),
-    getProductCards(products, false) // false = no dashboard
-  );
+const showProducts = (req, res) => {
+  const category = req.query.category;
+  const filteredProducts = category
+    ? productos.filter((p) => p.category === category)
+    : productos;
+
+  let productHTML = filteredProducts
+    .map(
+      (p) => `
+        <div>
+          <h3>${p.name}</h3>
+          <img src="${p.image}" alt="${p.name}" style="width:150px;">
+          <p><strong>Precio:</strong> $${p.price}</p>
+          <p><a href="/product/${p.id}">Ver más</a></p>
+        </div>
+      `
+    )
+    .join("");
+
+  const html = `<!DOCTYPE html>
+  <html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TiendaOnly</title>
+  </head>
+  <body>
+    <h1>TiendaOnly</h1>
+    <nav>
+      <ul>
+        <li><a href="/?category=camiseta">Camisetas</a></li>
+        <li><a href="/?category=pantalon">Pantalones</a></li>
+        <li><a href="/?category=zapatillas">Zapatillas</a></li>
+        <li><a href="/?category=accesorios">Accesorios</a></li>
+      </ul>
+    </nav>
+    <div>${productHTML}</div>
+  </body>
+  </html>`;
+
   res.send(html);
 };
 
-const showProductById = async (req, res) => {
-  const product = await Product.findById(req.params.productId);
-  const html = baseHtml(getNavBar(), getProductCards([product], false));
+const showProductById = (req, res) => {
+  const id = parseInt(req.params.id);
+  const product = productos.find((p) => p.id === id);
+
+  if (!product) {
+    return res.status(404).send("<h1>Producto no encontrado</h1>");
+  }
+
+  const html = `
+    <html>
+    <head><title>${product.name}</title></head>
+    <body>
+      <h1>${product.name}</h1>
+      <img src="${product.image}" alt="${product.name}" style="width:200px;">
+      <p><strong>Precio:</strong> $${product.price}</p>
+      <p>${product.description}</p>
+      <p><strong>Talla:</strong> ${product.talla}</p>
+      <a href="/">Volver a la tienda</a>
+    </body>
+    </html>
+  `;
   res.send(html);
-};
-
-const showDashboard = async (req, res) => {
-  const products = await Product.find();
-  const html = baseHtml(
-    getNavBar(true),
-    getProductCards(products, true) // true = dashboard
-  );
-  res.send(html);
-};
-
-const showNewProduct = (req, res) => {
-  const html = baseHtml(
-    getNavBar(true),
-    `
-    <h2>Nuevo Producto</h2>
-    <form action="/dashboard" method="POST">
-      <!-- Inputs para nombre, descripcion, imagen, etc. -->
-      <input type="text" name="nombre" placeholder="Nombre" required>
-      <input type="text" name="descripcion" placeholder="Descripción" required>
-      <input type="url" name="imagen" placeholder="URL imagen" required>
-      <select name="categoria" required>
-        <option value="">Categoría</option>
-        <option value="Camisetas">Camisetas</option>
-        <option value="Pantalones">Pantalones</option>
-        <option value="Zapatos">Zapatos</option>
-        <option value="Accesorios">Accesorios</option>
-      </select>
-      <select name="talla" required>
-        <option value="">Talla</option>
-        <option value="XS">XS</option>
-        <option value="S">S</option>
-        <option value="M">M</option>
-        <option value="L">L</option>
-        <option value="XL">XL</option>
-      </select>
-      <input type="number" name="precio" placeholder="Precio" required>
-      <button type="submit">Crear</button>
-    </form>
-  `
-  );
-  res.send(html);
-};
-
-const createProduct = async (req, res) => {
-  await Product.create(req.body);
-  res.redirect("/dashboard");
-};
-
-const showEditProduct = async (req, res) => {
-  const product = await Product.findById(req.params.productId);
-  const html = baseHtml(
-    getNavBar(true),
-    `
-    <h2>Editar Producto</h2>
-    <form action="/dashboard/${product._id}?_method=PUT" method="POST">
-      <input type="text" name="nombre" value="${product.nombre}" required>
-      <input type="text" name="descripcion" value="${
-        product.descripcion
-      }" required>
-      <input type="url" name="imagen" value="${product.imagen}" required>
-      <select name="categoria" required>
-        ${["Camisetas", "Pantalones", "Zapatos", "Accesorios"]
-          .map(
-            (opt) => `
-          <option value="${opt}" ${
-              product.categoria === opt ? "selected" : ""
-            }>${opt}</option>
-        `
-          )
-          .join("")}
-      </select>
-      <select name="talla" required>
-        ${["XS", "S", "M", "L", "XL"]
-          .map(
-            (opt) => `
-          <option value="${opt}" ${
-              product.talla === opt ? "selected" : ""
-            }>${opt}</option>
-        `
-          )
-          .join("")}
-      </select>
-      <input type="number" name="precio" value="${product.precio}" required>
-      <button type="submit">Actualizar</button>
-    </form>
-  `
-  );
-  res.send(html);
-};
-
-const updateProduct = async (req, res) => {
-  await Product.findByIdAndUpdate(req.params.productId, req.body);
-  res.redirect("/dashboard");
-};
-
-const deleteProduct = async (req, res) => {
-  await Product.findByIdAndDelete(req.params.productId);
-  res.redirect("/dashboard");
 };
 
 module.exports = {
   showProducts,
   showProductById,
-  showDashboard,
-  showNewProduct,
-  createProduct,
-  showEditProduct,
-  updateProduct,
-  deleteProduct,
 };
